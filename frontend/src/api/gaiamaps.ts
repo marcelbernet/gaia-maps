@@ -1,0 +1,45 @@
+import { StarData } from '../types/star';
+
+const BACKEND_URL = 'http://localhost:8000';
+
+export async function fetchStars(
+  location: [number, number],
+  date: Date
+): Promise<{ stars: StarData[] }> {
+  const [lat, lon] = location;
+  const datetime_iso = date.toISOString();
+  const res = await fetch(`${BACKEND_URL}/get-stars`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ lat, lon, datetime_iso }),
+  });
+  if (!res.ok) throw new Error('Failed to fetch stars');
+  const data = await res.json();
+  // Attach base_lat/base_lng to each star for overlay logic
+  return {
+    stars: (data.stars || []).map((star: any) => ({
+      ...star,
+      base_lat: lat,
+      base_lng: lon,
+    })),
+  };
+}
+
+export async function fetchStarPDF(star: StarData) {
+  const res = await fetch(`${BACKEND_URL}/star-pdf`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ star_info: star }),
+  });
+  if (!res.ok) throw new Error('Failed to fetch PDF');
+  const blob = await res.blob();
+  // Trigger download
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'star_report.pdf';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
+} 
