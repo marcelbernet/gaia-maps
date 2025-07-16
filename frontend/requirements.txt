@@ -2,4 +2,4 @@ reportlab
 pillow
 matplotlib
 numpy
-astropy 
+astropy

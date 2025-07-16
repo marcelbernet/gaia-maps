@@ -1,7 +1,5 @@
-fastapi
-uvicorn[standard]
-python-multipart
-astropy
-astroquery
-fpdf
+reportlab
+pillow
 matplotlib
+numpy
+astropy
