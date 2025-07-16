@@ -1,5 +1,9 @@
+fastapi
+uvicorn[standard]
 reportlab
 pillow
 matplotlib
 numpy
 astropy
+astroquery
+fpdf
