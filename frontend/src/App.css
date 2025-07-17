@@ -508,22 +508,25 @@ input.react-datepicker-ignore-onclickoutside {
   background: #fff;
   border: 2px solid #4ade80;
   border-radius: 12px;
-  padding: 2rem 1rem;
-  width: 90vw;
-  max-width: 500px;
-  min-width: 220px;
+  padding: 2vh 2vw;
+  width: 80vw;
+  min-width: 160px;
+  max-width: 600px;
+  height: 32vh;
+  min-height: 120px;
+  max-height: 60vh;
+  font-size: 4vh !important;
+  line-height: 1.2;
   text-align: center;
-  font-size: 1.1rem;
   z-index: 10;
   box-shadow: 0 4px 32px 0 #0002;
+  overflow-y: auto;
+  margin-bottom: 5.5rem;
 }
 
-@media (min-width: 900px) {
-  .intro-popup {
-    max-width: 600px;
-    padding: 3rem 2rem;
-    font-size: 1.5rem;
-  }
+.intro-popup, .intro-popup * {
+  font-size: 4vh !important;
+  line-height: 1.2 !important;
 }
 
 .tutorial-box {
@@ -548,27 +551,67 @@ input.react-datepicker-ignore-onclickoutside {
 }
 
 .datetime-widget {
-  position: absolute;
+  position: fixed;
   left: 50%;
-  bottom: 1rem;
+  bottom: 0.5rem;
   transform: translateX(-50%);
   background: #fff;
   border: 2px solid #f87171;
-  border-radius: 12px;
-  padding: 1rem 1.2rem;
-  width: 90vw;
+  border-radius: 12px 12px 0 0;
+  padding: 1.5vh 2vw;
+  width: 80vw;
+  min-width: 100px;
   max-width: 350px;
-  min-width: 180px;
+  height: 8vh;
+  min-height: 40px;
+  max-height: 12vh;
+  font-size: 2.5vh !important;
+  line-height: 1.2;
   text-align: center;
-  font-size: 1rem;
   z-index: 30;
   box-shadow: 0 2px 16px 0 #0002;
 }
+
+.datetime-widget, .datetime-widget * {
+  font-size: 2.5vh !important;
+  line-height: 1.2 !important;
+}
+
 @media (min-width: 900px) {
+  .intro-popup {
+    width: 50vw;
+    height: 28vh;
+    font-size: 2.2vh;
+    padding: 3vh 3vw;
+  }
   .datetime-widget {
-    bottom: 2rem;
+    width: 30vw;
+    height: 7vh;
+    font-size: 1.8vh;
+    padding: 1.2vh 2vw;
     max-width: 420px;
-    font-size: 1.15rem;
-    padding: 1.3rem 2rem;
+    min-width: 120px;
+    border-radius: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 2rem;
+    position: absolute;
+  }
+}
+
+@media (max-width: 600px) {
+  .intro-popup {
+    padding: 0.7rem 0.3rem;
+    font-size: 0.95rem;
+    max-height: 55vh;
+    margin-bottom: 6.5rem;
+  }
+  .datetime-widget {
+    padding: 0.6rem 0.5rem;
+    font-size: 0.95rem;
+    max-width: 98vw;
+    min-width: 80px;
+    bottom: 0;
+    border-radius: 12px 12px 0 0;
   }
 }

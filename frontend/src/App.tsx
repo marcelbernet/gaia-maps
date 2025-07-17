@@ -34,6 +34,11 @@ function raDecOffsets(data: any[]) {
 
 const DEFAULT_POSITION = [41.35168556332073, 2.1116924285888676];
 
+const getDeviceType = (width: number) => {
+  if (width <= 800) return 'Phone';
+  return 'Computer';
+};
+
 const App: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -44,6 +49,7 @@ const App: React.FC = () => {
   const [showExplanation, setShowExplanation] = useState(true);
   const [zenithStar, setZenithStar] = useState<StarData | null>(null);
   const [zenithPopupOpen, setZenithPopupOpen] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
 
   // Store the initial map center (never changes)
   const initialCenter = useRef<[number, number] | null>(DEFAULT_POSITION as [number, number]);
@@ -51,6 +57,14 @@ const App: React.FC = () => {
   const [showConstellation, setShowConstellation] = useState(false);
   const [tutorialStep, setTutorialStep] = useState<number | null>(null);
   const [hasClickedMap, setHasClickedMap] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     // Animate map to globe on load
@@ -153,6 +167,10 @@ const App: React.FC = () => {
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh', width: '100vw', overflow: 'hidden' }}>
+      {/* Test text for resolution and device type */}
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', background: 'rgba(0,0,0,0.08)', color: 'red', zIndex: 10000, fontSize: 14, textAlign: 'center', padding: '2px 0' }}>
+        Resolution: {windowSize.width} x {windowSize.height} — Device: {getDeviceType(windowSize.width)}
+      </div>
       <div className="map-bg">
         <MapSelector ref={mapRef} onLocationSelect={handleMapClick} selectedLocation={selectedLocation}>
           <StarOverlay 
