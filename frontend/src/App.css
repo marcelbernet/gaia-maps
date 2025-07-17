@@ -497,3 +497,78 @@ input.react-datepicker-ignore-onclickoutside {
     font-size: 1.15rem !important;
   }
 }
+
+/* Responsive overlay layout for intro popup, tutorial, and date-time widget */
+
+.intro-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border: 2px solid #4ade80;
+  border-radius: 12px;
+  padding: 2rem 1rem;
+  width: 90vw;
+  max-width: 500px;
+  min-width: 220px;
+  text-align: center;
+  font-size: 1.1rem;
+  z-index: 10;
+  box-shadow: 0 4px 32px 0 #0002;
+}
+
+@media (min-width: 900px) {
+  .intro-popup {
+    max-width: 600px;
+    padding: 3rem 2rem;
+    font-size: 1.5rem;
+  }
+}
+
+.tutorial-box {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 20;
+  background: #fffae0;
+  border: 2px solid #ffe066;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  box-shadow: 0 2px 12px 0 #0001;
+}
+@media (min-width: 900px) {
+  .tutorial-box {
+    top: 2rem;
+    right: 2rem;
+    font-size: 1.15rem;
+    padding: 1.2rem 2rem;
+  }
+}
+
+.datetime-widget {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 2px solid #f87171;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  width: 90vw;
+  max-width: 350px;
+  min-width: 180px;
+  text-align: center;
+  font-size: 1rem;
+  z-index: 30;
+  box-shadow: 0 2px 16px 0 #0002;
+}
+@media (min-width: 900px) {
+  .datetime-widget {
+    bottom: 2rem;
+    max-width: 420px;
+    font-size: 1.15rem;
+    padding: 1.3rem 2rem;
+  }
+}
