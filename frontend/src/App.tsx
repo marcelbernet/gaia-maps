@@ -107,7 +107,13 @@ const App: React.FC = () => {
       setZenithStar(zenith);
       setZenithPopupOpen(true);
     } catch (e: any) {
-      setError('Failed to fetch stars.');
+      if (e instanceof Error && (e as any).response && (e as any).response.status === 503) {
+        setError('Catalogue unavailable.');
+      } else if (e instanceof Error && e.message === 'Catalogue unavailable.') {
+        setError('Catalogue unavailable.');
+      } else {
+        setError('Failed to fetch stars.');
+      }
     } finally {
       setLoading(false);
     }

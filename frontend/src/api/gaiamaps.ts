@@ -14,6 +14,9 @@ export async function fetchStars(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ lat, lon, datetime_iso }),
   });
+  if (res.status === 503) {
+    throw new Error('Catalogue unavailable.');
+  }
   if (!res.ok) throw new Error('Failed to fetch stars');
   const data = await res.json();
   // Attach base_lat/base_lng to each star for overlay logic
