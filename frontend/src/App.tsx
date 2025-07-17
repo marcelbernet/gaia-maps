@@ -58,6 +58,21 @@ const App: React.FC = () => {
   const [tutorialStep, setTutorialStep] = useState<number | null>(null);
   const [hasClickedMap, setHasClickedMap] = useState(false);
 
+  // Add state for date, hour, and minute inputs, initialized to current time
+  const now = new Date();
+  const [dateInput, setDateInput] = useState(now.toISOString().slice(0, 10));
+  const [hourInput, setHourInput] = useState(now.getHours().toString().padStart(2, '0'));
+  const [minuteInput, setMinuteInput] = useState(now.getMinutes().toString().padStart(2, '0'));
+
+  // Update selectedDate when date, hour, or minute changes
+  useEffect(() => {
+    if (dateInput && hourInput && minuteInput) {
+      setSelectedDate(new Date(`${dateInput}T${hourInput}:${minuteInput}`));
+    } else {
+      setSelectedDate(null);
+    }
+  }, [dateInput, hourInput, minuteInput]);
+
   useEffect(() => {
     const handleResize = () => {
       setWindowSize({ width: window.innerWidth, height: window.innerHeight });
@@ -195,16 +210,75 @@ const App: React.FC = () => {
           </div>
         )}
       </div>
-      {/* Simple interactive date-time widget at the top */}
+      {/* Three-input date and time picker at the top: date, hour, minute */}
       <div className="w-full flex flex-col items-center mt-6 z-50">
-        <label htmlFor="datetime-input" className="mb-1 text-base font-semibold text-gray-800">Select Date & Time</label>
-        <input
-          id="datetime-input"
-          type="datetime-local"
-          className="px-4 py-2 rounded-lg border border-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-sky-400 text-gray-900 bg-white text-base w-full max-w-xs"
-          value={selectedDate ? selectedDate.toISOString().slice(0, 16) : ''}
-          onChange={e => setSelectedDate(e.target.value ? new Date(e.target.value) : null)}
-        />
+        <div className={
+          `bg-[rgba(30,34,54,0.88)] rounded-2xl shadow-2xl px-6 py-5 flex flex-col items-center max-w-xl w-full relative
+          sm:px-4 sm:py-3 sm:max-w-sm
+          md:px-6 md:py-5 md:max-w-xl
+          ${tutorialStep === 0 ? 'ring-[6px] ring-yellow-400 ring-offset-4 ring-offset-yellow-200 shadow-[0_0_48px_16px_rgba(255,230,0,0.95)] animate-[pulseGlow_1.2s_ease-in-out_infinite]' : ''}`
+        }
+        style={tutorialStep === 0 ? {
+          boxShadow: '0 0 0 8px #ffe066, 0 0 48px 16px #ffe066, 0 0 96px 32px #ffd700',
+          border: '4px solid #ffe066',
+          zIndex: 100,
+        } : {}}
+        >
+          <label className="mb-2 text-base font-semibold text-white text-center
+            sm:text-sm md:text-base">Select Date & Time</label>
+          <div className="flex gap-2 w-full max-w-xs sm:max-w-[90vw]">
+            <input
+              type="date"
+              className="flex-1 px-4 py-2 rounded-lg border border-sky-400 shadow focus:outline-none focus:ring-2 focus:ring-sky-400 text-white bg-[rgba(30,34,54,0.95)] text-base placeholder-gray-400 transition-colors duration-200
+                sm:px-2 sm:py-1 sm:text-sm md:px-4 md:py-2 md:text-base"
+              value={dateInput}
+              onChange={e => setDateInput(e.target.value)}
+            />
+            <select
+              className="w-16 px-2 py-2 rounded-lg border border-sky-400 shadow focus:outline-none focus:ring-2 focus:ring-sky-400 text-white bg-[rgba(30,34,54,0.95)] text-base transition-colors duration-200
+                sm:w-12 sm:px-1 sm:py-1 sm:text-sm md:w-16 md:px-2 md:py-2 md:text-base"
+              value={hourInput}
+              onChange={e => setHourInput(e.target.value)}
+            >
+              <option value="">HH</option>
+              {Array.from({ length: 24 }, (_, i) => (
+                <option key={i} value={String(i).padStart(2, '0')}>{String(i).padStart(2, '0')}</option>
+              ))}
+            </select>
+            <select
+              className="w-16 px-2 py-2 rounded-lg border border-sky-400 shadow focus:outline-none focus:ring-2 focus:ring-sky-400 text-white bg-[rgba(30,34,54,0.95)] text-base transition-colors duration-200
+                sm:w-12 sm:px-1 sm:py-1 sm:text-sm md:w-16 md:px-2 md:py-2 md:text-base"
+              value={minuteInput}
+              onChange={e => setMinuteInput(e.target.value)}
+            >
+              <option value="">MM</option>
+              {Array.from({ length: 60 }, (_, i) => (
+                <option key={i} value={String(i).padStart(2, '0')}>{String(i).padStart(2, '0')}</option>
+              ))}
+            </select>
+          </div>
+          {/* Get Stars button below the selector */}
+          <button
+            className={
+              `mt-6 w-full max-w-xs py-4 text-xl font-bold rounded-xl bg-gradient-to-r from-sky-400 to-purple-500 shadow-lg text-white transition-all duration-200 hover:from-purple-400 hover:to-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3
+              sm:py-2 sm:text-base sm:mt-4 md:py-4 md:text-xl md:mt-6
+              ${tutorialStep === 2 ? 'ring-[6px] ring-yellow-400 ring-offset-4 ring-offset-yellow-200 shadow-[0_0_48px_16px_rgba(255,230,0,0.95)] animate-[pulseGlow_1.2s_ease-in-out_infinite]' : ''}`
+            }
+            style={tutorialStep === 2 ? {
+              boxShadow: '0 0 0 8px #ffe066, 0 0 48px 16px #ffe066, 0 0 96px 32px #ffd700',
+              border: '4px solid #ffe066',
+              zIndex: 100,
+            } : {}}
+            onClick={handleGetStars}
+            disabled={loading}
+            type="button"
+          >
+            {loading && (
+              <span className="animate-spin inline-block w-6 h-6 border-4 border-white border-t-transparent rounded-full mr-2 sm:w-4 sm:h-4 md:w-6 md:h-6"></span>
+            )}
+            Get Stars
+          </button>
+        </div>
       </div>
       {/* Map and overlays (keep as is, below main widgets) */}
       <div className="map-bg">
@@ -218,10 +292,6 @@ const App: React.FC = () => {
             selectedDate={selectedDate}
           />
         </MapSelector>
-      </div>
-      {/* Resolution/device info (optional, for debugging) */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', background: 'rgba(0,0,0,0.08)', color: 'red', zIndex: 10000, fontSize: 14, textAlign: 'center', padding: '2px 0' }}>
-        Resolution: {windowSize.width} x {windowSize.height} — Device: {getDeviceType(windowSize.width)}
       </div>
     </div>
   );

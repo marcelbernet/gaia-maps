@@ -44,52 +44,61 @@ const IntroOverlay: React.FC<IntroOverlayProps> = ({ text, onFinish }) => {
   if (!displayed) return null;
 
   return (
-    <div className="fixed inset-0 z-20 flex flex-col items-center justify-center bg-none pointer-events-none">
+    <div className="fixed inset-0 z-20 flex flex-col items-center justify-start bg-none pointer-events-none pt-[18vh] md:pt-[22vh]">
       <div className="bg-[rgba(30,34,54,0.82)] rounded-2xl shadow-2xl px-6 py-6 flex flex-col items-center pointer-events-auto max-w-xl w-full relative h-2/5 min-h-[140px] justify-center">
+        {/* X button in top-right, no background */}
+        <button
+          type="button"
+          aria-label="Close"
+          onClick={() => onFinish && onFinish('skip')}
+          className="absolute top-3 right-3 text-white text-3xl font-bold focus:outline-none z-10 hover:scale-110 transition-transform"
+          style={{ pointerEvents: 'auto', background: 'none', border: 'none', boxShadow: 'none', width: '2.5rem', height: '2.5rem', lineHeight: '2.5rem', padding: 0 }}
+        >
+          ×
+        </button>
         <div className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl text-white text-center mb-6 drop-shadow-lg pointer-events-none select-none" style={{ textShadow: '0 0 24px #fff, 0 0 48px #6ec1e4' }}>
           {displayed}
         </div>
-        <div className="flex flex-col items-center gap-1 w-full">
-          {sublines.map((line, i) => (
-            <div
-              key={i}
-              className="font-sans text-xs sm:text-sm md:text-base text-blue-50 text-center max-w-lg mx-auto leading-relaxed tracking-wide bg-none select-none transition-opacity transition-transform duration-700"
-              style={{
-                opacity: showLines[i] ? 1 : 0,
-                transform: showLines[i] ? 'translateY(0)' : 'translateY(24px)',
-                transitionDelay: `${i * 0.5}s`,
-              }}
+        <div className="flex flex-col items-center gap-1 w-full relative min-h-[110px]">
+          {sublines.map((line, i) => {
+            const isVisible = showLines[i];
+            return (
+              <div
+                key={i}
+                className={`font-sans text-xs sm:text-sm md:text-base text-blue-50 text-center max-w-lg mx-auto leading-relaxed tracking-wide bg-none select-none
+                  transition-all duration-700
+                  ${isVisible ? 'opacity-100 translate-y-0 relative' : 'opacity-0 translate-y-8 absolute pointer-events-none'}`}
+                style={{
+                  left: 0, right: 0,
+                  transitionDelay: isVisible ? `${i * 0.5}s` : '0s',
+                }}
+              >
+                {line}
+              </div>
+            );
+          })}
+        </div>
+        {/* Show button only after last subline is visible */}
+        {showLines[2] && (
+          <div
+            className="flex gap-3 mt-2 justify-center w-full min-h-[44px] items-center transition-opacity transition-transform duration-700"
+            style={{
+              opacity: showButtons ? 1 : 0,
+              transform: showButtons ? 'translateY(0)' : 'translateY(24px)',
+              transitionDelay: '0.5s',
+              pointerEvents: showButtons ? 'auto' : 'none',
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => onFinish && onFinish('tutorial')}
+              className="rounded-lg border-none bg-gradient-to-r from-sky-400 to-purple-400 text-white text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 md:py-2.5 font-bold shadow-md font-sans transition-colors hover:from-purple-400 hover:to-sky-400"
+              style={{ cursor: showButtons ? 'pointer' : 'default' }}
             >
-              {line}
-            </div>
-          ))}
-        </div>
-        <div
-          className="flex gap-3 mt-6 justify-center w-full min-h-[44px] items-center transition-opacity transition-transform duration-700"
-          style={{
-            opacity: showButtons ? 1 : 0,
-            transform: showButtons ? 'translateY(0)' : 'translateY(24px)',
-            transitionDelay: '3.5s',
-            pointerEvents: showButtons ? 'auto' : 'none',
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => onFinish && onFinish('tutorial')}
-            className="rounded-lg border-none bg-gradient-to-r from-sky-400 to-purple-400 text-white text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 md:py-2.5 font-bold shadow-md font-sans transition-colors hover:from-purple-400 hover:to-sky-400"
-            style={{ cursor: showButtons ? 'pointer' : 'default' }}
-          >
-            Launch Tutorial
-          </button>
-          <button
-            type="button"
-            onClick={() => onFinish && onFinish('skip')}
-            className="rounded-lg border-none bg-[rgba(30,34,54,0.7)] text-white text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 md:py-2.5 font-bold shadow-md font-sans transition-colors hover:bg-sky-900"
-            style={{ cursor: showButtons ? 'pointer' : 'default' }}
-          >
-            Skip
-          </button>
-        </div>
+              Launch Tutorial
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
