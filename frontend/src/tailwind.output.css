@@ -622,6 +622,18 @@ video {
   top: 0.75rem;
 }
 
+.bottom-4 {
+  bottom: 1rem;
+}
+
+.right-4 {
+  right: 1rem;
+}
+
+.top-4 {
+  top: 1rem;
+}
+
 .z-20 {
   z-index: 20;
 }
@@ -640,6 +652,14 @@ video {
 
 .z-10 {
   z-index: 10;
+}
+
+.z-\[150\] {
+  z-index: 150;
+}
+
+.z-\[200\] {
+  z-index: 200;
 }
 
 .mx-auto {
@@ -677,6 +697,14 @@ video {
 
 .mr-2 {
   margin-right: 0.5rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
 }
 
 .box-border {
@@ -1010,6 +1038,14 @@ video {
   background-color: rgba(30,34,54,0.88);
 }
 
+.bg-\[rgba\(30\2c 34\2c 54\2c 0\.97\)\] {
+  background-color: rgba(30,34,54,0.97);
+}
+
+.bg-black\/40 {
+  background-color: rgb(0 0 0 / 0.4);
+}
+
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
@@ -1104,6 +1140,11 @@ video {
   padding-bottom: 1rem;
 }
 
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
 .pt-\[7vh\] {
   padding-top: 7vh;
 }
@@ -1147,6 +1188,16 @@ video {
 .text-3xl {
   font-size: 1.875rem;
   line-height: 2.25rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .font-bold {
@@ -1193,6 +1244,20 @@ video {
 .text-gray-800 {
   --tw-text-opacity: 1;
   color: rgb(31 41 55 / var(--tw-text-opacity));
+}
+
+.text-blue-100 {
+  --tw-text-opacity: 1;
+  color: rgb(219 234 254 / var(--tw-text-opacity));
+}
+
+.text-blue-200 {
+  --tw-text-opacity: 1;
+  color: rgb(191 219 254 / var(--tw-text-opacity));
+}
+
+.underline {
+  text-decoration-line: underline;
 }
 
 .placeholder-gray-400::-moz-placeholder {
@@ -1354,6 +1419,10 @@ video {
   background-color: rgb(12 74 110 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-\[rgba\(30\2c 34\2c 54\2c 0\.95\)\]:hover {
+  background-color: rgba(30,34,54,0.95);
+}
+
 .hover\:from-purple-400:hover {
   --tw-gradient-from: #c084fc var(--tw-gradient-from-position);
   --tw-gradient-to: rgb(192 132 252 / 0) var(--tw-gradient-to-position);
@@ -1362,6 +1431,16 @@ video {
 
 .hover\:to-sky-400:hover {
   --tw-gradient-to: #38bdf8 var(--tw-gradient-to-position);
+}
+
+.hover\:text-yellow-200:hover {
+  --tw-text-opacity: 1;
+  color: rgb(254 240 138 / var(--tw-text-opacity));
+}
+
+.hover\:text-yellow-300:hover {
+  --tw-text-opacity: 1;
+  color: rgb(253 224 71 / var(--tw-text-opacity));
 }
 
 .focus\:outline-none:focus {

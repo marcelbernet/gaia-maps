@@ -50,6 +50,7 @@ const App: React.FC = () => {
   const [zenithStar, setZenithStar] = useState<StarData | null>(null);
   const [zenithPopupOpen, setZenithPopupOpen] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   // Store the initial map center (never changes)
   const initialCenter = useRef<[number, number] | null>(DEFAULT_POSITION as [number, number]);
@@ -182,6 +183,35 @@ const App: React.FC = () => {
 
   return (
     <div className="fixed inset-0 min-h-screen h-screen w-full bg-gray-100 flex flex-col overflow-hidden">
+      {/* About Modal */}
+      {aboutOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40">
+          <div className="bg-[rgba(30,34,54,0.97)] rounded-2xl shadow-2xl px-8 py-8 max-w-lg w-full relative flex flex-col items-center">
+            <button
+              className="absolute top-3 right-3 text-white text-2xl font-bold focus:outline-none hover:scale-110 transition-transform"
+              style={{ background: 'none', border: 'none', boxShadow: 'none', width: '2.2rem', height: '2.2rem', lineHeight: '2.2rem', padding: 0 }}
+              onClick={() => setAboutOpen(false)}
+              aria-label="Close About"
+            >
+              ×
+            </button>
+            <h2 className="text-2xl font-bold text-white mb-4">About</h2>
+            <div className="text-base text-blue-50 mb-4 text-center">
+              <p>This web app lets you explore the night sky and discover the star directly above any location at any date and time. Select a place and time, and see the stars as Gaia sees them!</p>
+              <p className="mt-3 text-sm text-blue-200">Star data is sourced from the <a href="https://www.cosmos.esa.int/web/gaia/home" target="_blank" rel="noopener noreferrer" className="underline hover:text-yellow-300">Gaia Data Processing and Analysis Consortium (DPAC)</a>.</p>
+              <p className="mt-3 text-sm text-blue-200">Created by Marcel Bernet (<a href="mailto:mbernet@fqa.ub.edu" className="underline hover:text-yellow-300">mbernet@fqa.ub.edu</a>)</p>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* About Button (top center) */}
+      <button
+        className="fixed top-4 left-1/2 -translate-x-1/2 z-[150] bg-[rgba(30,34,54,0.7)] text-blue-100 text-xs px-4 py-2 rounded-full shadow hover:bg-[rgba(30,34,54,0.95)] hover:text-yellow-200 transition-all focus:outline-none"
+        onClick={() => setAboutOpen(true)}
+        aria-label="About"
+      >
+        About
+      </button>
       {/* Tutorial widget/modal (absolute for desktop, static for mobile) */}
       {tutorialStep !== null && (
         <div className="md:absolute md:top-8 md:right-8 md:left-auto left-0 top-0 w-full flex justify-center md:block z-50">
