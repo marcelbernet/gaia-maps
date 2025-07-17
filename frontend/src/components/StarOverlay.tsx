@@ -137,70 +137,85 @@ const StarOverlay: React.FC<StarOverlayProps> = ({ stars, fetchStarPDF, zenithSt
         const temp = bpRpToTemperature(bp_rp);
         const [r, g, b] = temperatureToRGB(temp);
         const color = `rgb(${Math.round(r)},${Math.round(g)},${Math.round(b)})`;
-        const radius = isZenith
-          ? computeStarSize(gmag) * 1.5
-          : computeStarSize(gmag);
-        // Use CircleMarker for all stars, including zenith
+        // Visible marker size
+        const visibleRadius = computeStarSize(gmag) * 1.5;
+        // Hitbox marker size (invisible)
+        const hitboxRadius = computeStarSize(gmag) * 2.5;
+        const center = [
+          (star.base_lat || 0) + (star.alt_diff || 0),
+          (star.base_lng || 0) + (star.az_diff || 0),
+        ];
         return (
-          <CircleMarker
-            key={i}
-            center={[
-              (star.base_lat || 0) + (star.alt_diff || 0),
-              (star.base_lng || 0) + (star.az_diff || 0),
-            ]}
-            // @ts-ignore: radius is valid for CircleMarker in react-leaflet v4
-            radius={radius}
-            pathOptions={{
-              color,
-              weight: 2,
-              fillOpacity: 0.95,
-              opacity: 1,
-              fillColor: color,
-            }}
-            eventHandlers={isZenith && setZenithPopupOpen ? {
-              click: () => setZenithPopupOpen(true)
-            } : undefined}
-          >
-            {(isZenith && zenithPopupOpen) || !isZenith ? (
-              <Popup 
-                position={[
-                  (star.base_lat || 0) + (star.alt_diff || 0),
-                  (star.base_lng || 0) + (star.az_diff || 0),
-                ]}
-                eventHandlers={isZenith && setZenithPopupOpen ? { remove: () => setZenithPopupOpen(false) } : undefined}
-              >
-                <div style={{ minWidth: 220, color: '#f4faff', padding: 6 }}>
-                  {star.designation && (
-                    <div style={{ fontWeight: 700, fontSize: '1.1em', marginBottom: 6 }}>
-                      {star.designation}
-                    </div>
-                  )}
-                  <div><b>G:</b> {star.phot_g_mean_mag?.toFixed(2)}</div>
-                  <div><b>BP-RP:</b> {star.bp_rp?.toFixed(2)}</div>
-                  {star.parallax && star.parallax > 0 && (
-                    <div><b>Distance:</b> {(1000 / star.parallax).toFixed(2)} pc</div>
-                  )}
-                  <button
-                    style={{ marginTop: 12 }}
-                    onClick={async () => {
-                      let subtitle = '';
-                      if (selectedDate && star.base_lat && star.base_lng) {
-                        const location = await fetchLocationName(star.base_lat, star.base_lng);
-                        const dateStr = selectedDate.toLocaleString(undefined, {
-                          year: 'numeric', month: 'long', day: 'numeric',
-                          hour: '2-digit', minute: '2-digit'
-                        });
-                        subtitle = `${dateStr} – ${location}`;
-                      }
-                      fetchStarPDF({ ...star, subtitle });
-                    }}
-                  >
-                    Download PDF
-                  </button>
-                </div>
-              </Popup>
-            ) : null}
-          </CircleMarker>
+          <React.Fragment key={i}>
+            {/* Large transparent hitbox marker for easier clicking */}
+            <CircleMarker
+              center={center}
+              pathOptions={{
+                color: 'transparent',
+                fillColor: 'transparent',
+                fillOpacity: 0,
+                opacity: 0,
+                weight: 0,
+                radius: hitboxRadius,
+              }}
+              eventHandlers={{
+                click: isZenith && setZenithPopupOpen ? () => setZenithPopupOpen(true) : undefined
+              }}
+            />
+            {/* Visible star marker */}
+            <CircleMarker
+              center={center}
+              pathOptions={{
+                color,
+                weight: 2,
+                fillOpacity: 0.95,
+                opacity: 1,
+                fillColor: color,
+                radius: visibleRadius,
+              }}
+              eventHandlers={isZenith && setZenithPopupOpen ? {
+                click: () => setZenithPopupOpen(true)
+              } : undefined}
+              // Optionally, set interactive={false} if you want only the hitbox to be clickable
+            >
+              {(isZenith && zenithPopupOpen) || !isZenith ? (
+                <Popup 
+                  position={center}
+                  eventHandlers={isZenith && setZenithPopupOpen ? { remove: () => setZenithPopupOpen(false) } : undefined}
+                >
+                  <div style={{ minWidth: 220, color: '#f4faff', padding: 6 }}>
+                    {star.designation && (
+                      <div style={{ fontWeight: 700, fontSize: '1.1em', marginBottom: 6 }}>
+                        {star.designation}
+                      </div>
+                    )}
+                    <div><b>G:</b> {star.phot_g_mean_mag?.toFixed(2)}</div>
+                    <div><b>BP-RP:</b> {star.bp_rp?.toFixed(2)}</div>
+                    {star.parallax && star.parallax > 0 && (
+                      <div><b>Distance:</b> {(1000 / star.parallax).toFixed(2)} pc</div>
+                    )}
+                    <button
+                      style={{ marginTop: 12 }}
+                      onClick={async () => {
+                        let subtitle = '';
+                        if (selectedDate && star.base_lat && star.base_lng) {
+                          const location = await fetchLocationName(star.base_lat, star.base_lng);
+                          const dateStr = selectedDate.toLocaleString(undefined, {
+                            year: 'numeric', month: 'long', day: 'numeric',
+                            hour: '2-digit', minute: '2-digit'
+                          });
+                          subtitle = `${dateStr} – ${location}`;
+                        }
+                        fetchStarPDF({ ...star, subtitle });
+                      }}
+                    >
+                      Download PDF
+                    </button>
+                  </div>
+                </Popup>
+              ) : null}
+            </CircleMarker>
+          </React.Fragment>
         );
       })}
     </>

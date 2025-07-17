@@ -256,7 +256,18 @@ const App: React.FC = () => {
         >
           {/* Error message for missing location/date/time */}
           {error && (
-            <div className="error w-full text-center mb-2">{error}</div>
+            <div className="error w-full text-center mb-2 relative">
+              {error}
+              <button
+                type="button"
+                aria-label="Close error"
+                onClick={() => setError(null)}
+                className="absolute top-1 right-2 text-white text-xl font-bold focus:outline-none hover:scale-110 transition-transform close-explanation"
+                style={{ background: 'none', border: 'none', boxShadow: 'none', width: '2em', height: '2em', lineHeight: '2em', padding: 0 }}
+              >
+                ×
+              </button>
+            </div>
           )}
           <label className="mb-2 text-base font-semibold text-white text-center
             sm:text-sm md:text-base">Select Date & Time</label>
