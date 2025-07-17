@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities; 
+
+/* test: bg-blue-500 */
+
+@layer utilities {
+    .bg-test-red {
+      background-color: #ff0000 !important;
+    }
+  }
