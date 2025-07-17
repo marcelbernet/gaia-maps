@@ -241,7 +241,7 @@ const App: React.FC = () => {
         )}
       </div>
       {/* Three-input date and time picker at the top: date, hour, minute */}
-      <div className="w-full flex flex-col items-center mt-6 z-50">
+      <div className="w-full flex flex-col items-center mt-12 mb-4 z-50">
         <div className={
           `bg-[rgba(30,34,54,0.88)] rounded-2xl shadow-2xl px-6 py-5 flex flex-col items-center max-w-xl w-full relative
           sm:px-4 sm:py-3 sm:max-w-sm
