@@ -8,6 +8,7 @@ import { fetchStars, fetchStarPDF } from './api/gaiamaps';
 import { StarData } from './types/star';
 import IntroOverlay from './components/TypewriterHeadline.tsx';
 import TutorialModal from './components/TutorialModal';
+import TestTailwindBox from './components/TestTailwindBox';
 
 // Big Dipper data
 const bigDipperData = [
@@ -171,6 +172,7 @@ const App: React.FC = () => {
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', background: 'rgba(0,0,0,0.08)', color: 'red', zIndex: 10000, fontSize: 14, textAlign: 'center', padding: '2px 0' }}>
         Resolution: {windowSize.width} x {windowSize.height} — Device: {getDeviceType(windowSize.width)}
       </div>
+      <TestTailwindBox />
       <div className="map-bg">
         <MapSelector ref={mapRef} onLocationSelect={handleMapClick} selectedLocation={selectedLocation}>
           <StarOverlay 

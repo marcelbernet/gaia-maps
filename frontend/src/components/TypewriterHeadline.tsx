@@ -176,4 +176,4 @@ const IntroOverlay: React.FC<IntroOverlayProps> = ({ text, onFinish }) => {
   );
 };
 
-export default IntroOverlay; 
+export default IntroOverlay;
