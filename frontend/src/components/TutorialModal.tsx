@@ -36,58 +36,17 @@ const TutorialModal: React.FC<TutorialModalProps> = ({ step, onNext, onSkip }) =
   }, [step]);
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        zIndex: 100,
-        pointerEvents: 'none',
-      }}
-    >
-      {/* Modal box anchored top right */}
+    <div className="fixed inset-0 z-[100] pointer-events-none">
+      {/* Modal box anchored top right on desktop, top/centered on mobile */}
       <div
-        style={{
-          position: 'absolute',
-          top: 32,
-          right: 32,
-          background: 'rgba(30,34,54,0.95)',
-          borderRadius: 18,
-          boxShadow: '0 4px 32px 0 #000a',
-          padding: '2em 2.5em',
-          color: '#fff',
-          minWidth: 320,
-          maxWidth: 400,
-          fontFamily: 'Montserrat, Arial, sans-serif',
-          fontSize: '1.2rem',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          gap: '1.2em',
-          pointerEvents: 'auto',
-        }}
+        className="absolute top-8 right-8 left-8 md:left-auto bg-[rgba(30,34,54,0.95)] rounded-xl shadow-2xl px-8 py-6 text-white min-w-[260px] max-w-xs md:max-w-sm font-sans text-base md:text-lg flex flex-col items-start gap-4 pointer-events-auto"
       >
-        <div style={{ fontWeight: 700, fontSize: '1.3em', marginBottom: '0.5em' }}>{step === 2 ? 'Click Get Stars' : steps[step].text}</div>
-        <div style={{ display: 'flex', gap: '1em', width: '100%' }}>
+        <div className="font-bold text-lg md:text-xl mb-2">{step === 2 ? 'Click Get Stars' : steps[step].text}</div>
+        <div className="flex gap-3 w-full">
           <button
             type="button"
             onClick={onNext}
-            style={{
-              borderRadius: '8px',
-              border: 'none',
-              background: 'linear-gradient(90deg, #6ec1e4 0%, #b388ff 100%)',
-              color: '#fff',
-              fontSize: '1.1em',
-              padding: '0.6em 1.5em',
-              cursor: 'pointer',
-              boxShadow: '0 2px 8px #0006',
-              fontFamily: 'Montserrat, Arial, sans-serif',
-              fontWeight: 700,
-              transition: 'background 0.2s, color 0.2s',
-              flex: 1,
-            }}
+            className="rounded-lg border-none bg-gradient-to-r from-sky-400 to-purple-400 text-white text-base md:text-lg px-4 py-2 font-bold shadow-md font-sans transition-colors hover:from-purple-400 hover:to-sky-400 flex-1"
           >
             {step < 2 ? 'Next' : 'Done'}
           </button>
@@ -95,20 +54,7 @@ const TutorialModal: React.FC<TutorialModalProps> = ({ step, onNext, onSkip }) =
             <button
               type="button"
               onClick={onSkip}
-              style={{
-                borderRadius: '8px',
-                border: 'none',
-                background: 'rgba(30,34,54,0.7)',
-                color: '#fff',
-                fontSize: '1.1em',
-                padding: '0.6em 1.5em',
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px #0006',
-                fontFamily: 'Montserrat, Arial, sans-serif',
-                fontWeight: 700,
-                transition: 'background 0.2s, color 0.2s',
-                flex: 1,
-              }}
+              className="rounded-lg border-none bg-[rgba(30,34,54,0.7)] text-white text-base md:text-lg px-4 py-2 font-bold shadow-md font-sans transition-colors hover:bg-sky-900 flex-1"
             >
               Skip Tutorial
             </button>

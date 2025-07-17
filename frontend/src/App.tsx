@@ -8,7 +8,6 @@ import { fetchStars, fetchStarPDF } from './api/gaiamaps';
 import { StarData } from './types/star';
 import IntroOverlay from './components/TypewriterHeadline.tsx';
 import TutorialModal from './components/TutorialModal';
-import TestTailwindBox from './components/TestTailwindBox';
 
 // Big Dipper data
 const bigDipperData = [
@@ -167,12 +166,47 @@ const App: React.FC = () => {
   }));
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', width: '100vw', overflow: 'hidden' }}>
-      {/* Test text for resolution and device type */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', background: 'rgba(0,0,0,0.08)', color: 'red', zIndex: 10000, fontSize: 14, textAlign: 'center', padding: '2px 0' }}>
-        Resolution: {windowSize.width} x {windowSize.height} — Device: {getDeviceType(windowSize.width)}
+    <div className="fixed inset-0 min-h-screen h-screen w-full bg-gray-100 flex flex-col overflow-hidden">
+      {/* Tutorial widget/modal (absolute for desktop, static for mobile) */}
+      {tutorialStep !== null && (
+        <div className="md:absolute md:top-8 md:right-8 md:left-auto left-0 top-0 w-full flex justify-center md:block z-50">
+          <TutorialModal
+            step={tutorialStep}
+            onNext={() => {
+              if (tutorialStep < 2) setTutorialStep(tutorialStep + 1);
+              else setTutorialStep(null);
+            }}
+            onSkip={() => setTutorialStep(null)}
+          />
+        </div>
+      )}
+      {/* Main content layout */}
+      <div className="flex flex-col items-center justify-center flex-1 w-full px-2 md:px-0">
+        {/* Introduction Text (TypewriterHeadline) */}
+        {showConstellation && (
+          <div className="w-full flex justify-center mt-8 md:mt-0">
+            <IntroOverlay
+              text="Find your star in the cosmos."
+              onFinish={(action) => {
+                if (action === 'tutorial') setTutorialStep(0);
+                setShowConstellation(false);
+              }}
+            />
+          </div>
+        )}
       </div>
-      <TestTailwindBox />
+      {/* Simple interactive date-time widget at the top */}
+      <div className="w-full flex flex-col items-center mt-6 z-50">
+        <label htmlFor="datetime-input" className="mb-1 text-base font-semibold text-gray-800">Select Date & Time</label>
+        <input
+          id="datetime-input"
+          type="datetime-local"
+          className="px-4 py-2 rounded-lg border border-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-sky-400 text-gray-900 bg-white text-base w-full max-w-xs"
+          value={selectedDate ? selectedDate.toISOString().slice(0, 16) : ''}
+          onChange={e => setSelectedDate(e.target.value ? new Date(e.target.value) : null)}
+        />
+      </div>
+      {/* Map and overlays (keep as is, below main widgets) */}
       <div className="map-bg">
         <MapSelector ref={mapRef} onLocationSelect={handleMapClick} selectedLocation={selectedLocation}>
           <StarOverlay 
@@ -185,35 +219,9 @@ const App: React.FC = () => {
           />
         </MapSelector>
       </div>
-      {showConstellation && (
-        <IntroOverlay
-          text="Find your star in the cosmos."
-          onFinish={(action) => {
-            if (action === 'tutorial') setTutorialStep(0);
-            setShowConstellation(false);
-          }}
-        />
-      )}
-      {tutorialStep !== null && (
-        <TutorialModal
-          step={tutorialStep}
-          onNext={() => {
-            if (tutorialStep < 2) setTutorialStep(tutorialStep + 1);
-            else setTutorialStep(null);
-          }}
-          onSkip={() => setTutorialStep(null)}
-        />
-      )}
-      <div className="App app-overlay">
-        {/* h1 and explanation removed for now */}
-        <div className="controls">
-          <DateTimePicker value={selectedDate} onChange={setSelectedDate} />
-          <button onClick={handleGetStars} disabled={loading || !selectedLocation || !selectedDate}>
-            Get Stars
-          </button>
-        </div>
-        {loading && <Loader />}
-        {error && <div className="error">{error}</div>}
+      {/* Resolution/device info (optional, for debugging) */}
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', background: 'rgba(0,0,0,0.08)', color: 'red', zIndex: 10000, fontSize: 14, textAlign: 'center', padding: '2px 0' }}>
+        Resolution: {windowSize.width} x {windowSize.height} — Device: {getDeviceType(windowSize.width)}
       </div>
     </div>
   );
