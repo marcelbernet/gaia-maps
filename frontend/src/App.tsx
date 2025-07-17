@@ -98,7 +98,7 @@ const App: React.FC = () => {
 
   const handleGetStars = async () => {
     if (!selectedLocation || !selectedDate) {
-      setError('Please select a location and date/time.');
+      setError('Click somewhere on the map!');
       return;
     }
     setLoading(true);
