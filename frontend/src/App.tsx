@@ -254,6 +254,10 @@ const App: React.FC = () => {
           zIndex: 100,
         } : {}}
         >
+          {/* Error message for missing location/date/time */}
+          {error && (
+            <div className="error w-full text-center mb-2">{error}</div>
+          )}
           <label className="mb-2 text-base font-semibold text-white text-center
             sm:text-sm md:text-base">Select Date & Time</label>
           <div className="flex gap-2 w-full max-w-xs sm:max-w-[90vw]">
