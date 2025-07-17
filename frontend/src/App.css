@@ -10,17 +10,6 @@ body, #root, .App {
   position: relative;
 }
 
-/* Starfield background */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: url('https://svgshare.com/i/12dQ.svg') repeat;
-  opacity: 0.25;
-}
-
 .map-bg {
   position: fixed;
   top: 0;
@@ -206,17 +195,6 @@ input.react-datepicker-ignore-onclickoutside {
 .react-datepicker__time-list-item--selected {
   background: #6ec1e4 !important;
   color: #fff !important;
-}
-
-/* Starfield accent (optional, for extra stars) */
-.App::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0; top: 0; bottom: 0;
-  pointer-events: none;
-  background: url('https://svgshare.com/i/12dQ.svg') repeat;
-  opacity: 0.18;
-  z-index: 0;
 }
 
 #root {

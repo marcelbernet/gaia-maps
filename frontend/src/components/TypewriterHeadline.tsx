@@ -44,22 +44,22 @@ const IntroOverlay: React.FC<IntroOverlayProps> = ({ text, onFinish }) => {
   if (!displayed) return null;
 
   return (
-    <div className="fixed inset-0 z-20 flex flex-col items-center justify-start bg-none pointer-events-none pt-[18vh] md:pt-[22vh]">
-      <div className="bg-[rgba(30,34,54,0.82)] rounded-2xl shadow-2xl px-6 py-6 flex flex-col items-center pointer-events-auto max-w-xl w-full relative h-2/5 min-h-[140px] justify-center">
+    <div className="fixed inset-0 z-20 flex flex-col items-center justify-start bg-none pointer-events-none pt-[10vh] md:pt-[18vh]">
+      <div className="bg-[rgba(30,34,54,0.82)] rounded-2xl shadow-2xl px-3 sm:px-6 py-4 sm:py-6 flex flex-col items-center pointer-events-auto max-w-xl max-w-[95vw] w-full relative h-auto min-h-[120px] sm:min-h-[140px] justify-center">
         {/* X button in top-right, no background */}
         <button
           type="button"
           aria-label="Close"
           onClick={() => onFinish && onFinish('skip')}
-          className="absolute top-3 right-3 text-white text-3xl font-bold focus:outline-none z-10 hover:scale-110 transition-transform"
-          style={{ pointerEvents: 'auto', background: 'none', border: 'none', boxShadow: 'none', width: '2.5rem', height: '2.5rem', lineHeight: '2.5rem', padding: 0 }}
+          className="absolute top-2 right-2 sm:top-3 sm:right-3 text-white text-2xl sm:text-3xl font-bold focus:outline-none z-10 hover:scale-110 transition-transform"
+          style={{ pointerEvents: 'auto', background: 'none', border: 'none', boxShadow: 'none', width: '2.2rem', height: '2.2rem', lineHeight: '2.2rem', padding: 0 }}
         >
           ×
         </button>
-        <div className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl text-white text-center mb-6 drop-shadow-lg pointer-events-none select-none" style={{ textShadow: '0 0 24px #fff, 0 0 48px #6ec1e4' }}>
+        <div className="font-serif text-base xs:text-lg sm:text-xl md:text-2xl lg:text-3xl text-white text-center mb-4 sm:mb-6 drop-shadow-lg pointer-events-none select-none break-words" style={{ textShadow: '0 0 24px #fff, 0 0 48px #6ec1e4', wordBreak: 'break-word' }}>
           {displayed}
         </div>
-        <div className="flex flex-col items-center gap-1 w-full relative min-h-[110px]">
+        <div className="flex flex-col items-center gap-1 w-full relative min-h-[90px] sm:min-h-[110px]">
           {sublines.map((line, i) => {
             const isVisible = showLines[i];
             return (

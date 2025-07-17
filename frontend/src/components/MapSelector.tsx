@@ -1,6 +1,14 @@
 import React, { forwardRef } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import * as L from 'leaflet';
+
+// Fix Leaflet marker icon paths for production (public/)
+(L.Icon as any)['Default'].mergeOptions({
+  iconRetinaUrl: '/marker-icon-2x.png',
+  iconUrl: '/marker-icon.png',
+  shadowUrl: '/marker-shadow.png',
+});
 
 interface MapSelectorProps {
   onLocationSelect: (coords: [number, number]) => void;
