@@ -16,6 +16,7 @@ import os
 from generate_pdf import generate_pdf
 from fastapi.responses import StreamingResponse
 import io
+from fastapi.responses import JSONResponse
 
 app = FastAPI(title="GaiaMaps API", description="API for querying Gaia stars above a location at a given time.")
 
@@ -134,6 +135,13 @@ def get_stars(req: StarRequest):
         print(f"[ERROR] HTTPException: {he.detail}", file=sys.stderr)
         raise
     except Exception as e:
+        # User-friendly error for Gaia archive maintenance or VOTABLE errors
+        if "VOTABLE" in str(e) or "maintenance" in str(e).lower():
+            print(f"[ERROR] Gaia archive unavailable: {str(e)}", file=sys.stderr)
+            return JSONResponse(
+                status_code=503,
+                content={"detail": "Gaia archive is temporarily unavailable. Please try again later."}
+            )
         print(f"[ERROR] Internal error: {str(e)}", file=sys.stderr)
         raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
 
