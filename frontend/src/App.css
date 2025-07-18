@@ -598,21 +598,54 @@ input.react-datepicker-ignore-onclickoutside {
   .date-time-widget-label,
   .date-time-widget-input,
   .date-time-widget-button {
-    font-size: 1.5vh !important;
-    padding: 0.5vh 1vw !important;
+    font-size: 1.05vh !important;
+    padding: 0.35vh 0.7vw !important;
   }
   .date-time-widget-button {
-    min-height: 2.5em;
+    min-height: 1.75em;
   }
 }
 @media (max-height: 400px) {
   .date-time-widget-label,
   .date-time-widget-input,
   .date-time-widget-button {
-    font-size: 1.1vh !important;
-    padding: 0.3vh 0.5vw !important;
+    font-size: 0.77vh !important;
+    padding: 0.21vh 0.35vw !important;
   }
   .date-time-widget-button {
-    min-height: 2em;
+    min-height: 1.4em;
   }
+}
+
+.date-time-widget-error {
+  font-size: 0.85em;
+  color: #ffb4b4;
+  background: rgba(60, 0, 0, 0.7);
+  border-radius: 8px;
+  padding: 0.3em 0.8em 0.3em 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  box-shadow: 0 0 8px #ffb4b4aa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.date-time-widget-error .close-explanation {
+  position: static;
+  margin-left: 0.5em;
+  font-size: 1.1em;
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1.5em;
+  box-shadow: none;
+  border: none;
+  background: none;
+  color: #fff;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

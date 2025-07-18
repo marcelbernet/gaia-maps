@@ -240,6 +240,20 @@ const App: React.FC = () => {
           </div>
         )}
       </div>
+      {/* Error message for missing location/date/time */}
+      {error && (
+        <div className="date-time-widget-error">
+          <span>{error}</span>
+          <button
+            type="button"
+            aria-label="Close error"
+            onClick={() => setError(null)}
+            className="close-explanation"
+          >
+            ×
+          </button>
+        </div>
+      )}
       {/* Three-input date and time picker at the top: date, hour, minute */}
       <div className="w-full flex flex-col items-center mt-12 mb-4 z-50">
         <div className={
@@ -254,21 +268,6 @@ const App: React.FC = () => {
           zIndex: 100,
         } : {}}
         >
-          {/* Error message for missing location/date/time */}
-          {error && (
-            <div className="error w-full text-center mb-2 relative">
-              {error}
-              <button
-                type="button"
-                aria-label="Close error"
-                onClick={() => setError(null)}
-                className="absolute top-1 right-2 text-white text-xl font-bold focus:outline-none hover:scale-110 transition-transform close-explanation"
-                style={{ background: 'none', border: 'none', boxShadow: 'none', width: '2em', height: '2em', lineHeight: '2em', padding: 0 }}
-              >
-                ×
-              </button>
-            </div>
-          )}
           <label className="mb-2 font-semibold text-white text-center date-time-widget-label"
             >Select Date & Time</label>
           <div className="flex gap-2 w-full max-w-xs sm:max-w-[90vw]">
