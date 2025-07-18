@@ -597,11 +597,20 @@ input.react-datepicker-ignore-onclickoutside {
 .date-time-widget-label,
 .date-time-widget-input,
 .date-time-widget-button {
-  font-size: clamp(0.8rem, 2.2vh, 1.15rem) !important;
-  padding: clamp(0.3em, 1.1vh, 0.9em) clamp(0.5em, 2vw, 1.2em) !important;
+  font-size: clamp(0.7rem, 1.8vh, 1.1rem) !important;
+  padding: clamp(0.18em, 0.8vh, 0.8em) clamp(0.4em, 1.5vw, 1.1em) !important;
 }
 .date-time-widget-button {
-  min-height: 2.1em;
+  min-height: clamp(1.3em, 2.1vh, 2.1em);
+}
+
+/* Widget box scaling */
+.date-time-widget-container {
+  border-radius: clamp(10px, 2.5vh, 22px);
+  box-shadow: 0 0 clamp(8px, 2.5vh, 32px) 0 #000a, 0 1.5px clamp(4px, 1vh, 8px) 0 #6ec1e4aa;
+  padding: clamp(0.5em, 2vh, 2.5em) clamp(0.7em, 2vw, 2em);
+  max-width: clamp(180px, 60vw, 420px);
+  min-width: clamp(80px, 30vw, 120px);
 }
 
 .date-time-widget-error {
