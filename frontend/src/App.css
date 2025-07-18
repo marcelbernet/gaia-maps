@@ -609,8 +609,6 @@ input.react-datepicker-ignore-onclickoutside {
   border-radius: clamp(10px, 2.5vh, 22px);
   box-shadow: 0 0 clamp(8px, 2.5vh, 32px) 0 #000a, 0 1.5px clamp(4px, 1vh, 8px) 0 #6ec1e4aa;
   padding: clamp(0.5em, 2vh, 2.5em) clamp(0.7em, 2vw, 2em);
-  max-width: clamp(180px, 60vw, 420px);
-  min-width: clamp(80px, 30vw, 120px);
 }
 
 .date-time-widget-error {
