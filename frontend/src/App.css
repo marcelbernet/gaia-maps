@@ -593,3 +593,26 @@ input.react-datepicker-ignore-onclickoutside {
     border-radius: 12px 12px 0 0;
   }
 }
+
+@media (max-height: 600px) {
+  .date-time-widget-label,
+  .date-time-widget-input,
+  .date-time-widget-button {
+    font-size: 1.5vh !important;
+    padding: 0.5vh 1vw !important;
+  }
+  .date-time-widget-button {
+    min-height: 2.5em;
+  }
+}
+@media (max-height: 400px) {
+  .date-time-widget-label,
+  .date-time-widget-input,
+  .date-time-widget-button {
+    font-size: 1.1vh !important;
+    padding: 0.3vh 0.5vw !important;
+  }
+  .date-time-widget-button {
+    min-height: 2em;
+  }
+}

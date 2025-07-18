@@ -269,19 +269,17 @@ const App: React.FC = () => {
               </button>
             </div>
           )}
-          <label className="mb-2 text-base font-semibold text-white text-center
-            sm:text-sm md:text-base">Select Date & Time</label>
+          <label className="mb-2 font-semibold text-white text-center date-time-widget-label"
+            >Select Date & Time</label>
           <div className="flex gap-2 w-full max-w-xs sm:max-w-[90vw]">
             <input
               type="date"
-              className="flex-1 px-4 py-2 rounded-lg border border-sky-400 shadow focus:outline-none focus:ring-2 focus:ring-sky-400 text-white bg-[rgba(30,34,54,0.95)] text-base placeholder-gray-400 transition-colors duration-200
-                sm:px-2 sm:py-1 sm:text-sm md:px-4 md:py-2 md:text-base"
+              className="flex-1 rounded-lg border border-sky-400 shadow focus:outline-none focus:ring-2 focus:ring-sky-400 text-white bg-[rgba(30,34,54,0.95)] date-time-widget-input placeholder-gray-400 transition-colors duration-200"
               value={dateInput}
               onChange={e => setDateInput(e.target.value)}
             />
             <select
-              className="w-16 px-2 py-2 rounded-lg border border-sky-400 shadow focus:outline-none focus:ring-2 focus:ring-sky-400 text-white bg-[rgba(30,34,54,0.95)] text-base transition-colors duration-200
-                sm:w-12 sm:px-1 sm:py-1 sm:text-sm md:w-16 md:px-2 md:py-2 md:text-base"
+              className="w-16 rounded-lg border border-sky-400 shadow focus:outline-none focus:ring-2 focus:ring-sky-400 text-white bg-[rgba(30,34,54,0.95)] date-time-widget-input transition-colors duration-200"
               value={hourInput}
               onChange={e => setHourInput(e.target.value)}
             >
@@ -291,8 +289,7 @@ const App: React.FC = () => {
               ))}
             </select>
             <select
-              className="w-16 px-2 py-2 rounded-lg border border-sky-400 shadow focus:outline-none focus:ring-2 focus:ring-sky-400 text-white bg-[rgba(30,34,54,0.95)] text-base transition-colors duration-200
-                sm:w-12 sm:px-1 sm:py-1 sm:text-sm md:w-16 md:px-2 md:py-2 md:text-base"
+              className="w-16 rounded-lg border border-sky-400 shadow focus:outline-none focus:ring-2 focus:ring-sky-400 text-white bg-[rgba(30,34,54,0.95)] date-time-widget-input transition-colors duration-200"
               value={minuteInput}
               onChange={e => setMinuteInput(e.target.value)}
             >
@@ -305,8 +302,8 @@ const App: React.FC = () => {
           {/* Get Stars button below the selector */}
           <button
             className={
-              `mt-6 w-full max-w-xs py-4 text-xl font-bold rounded-xl bg-gradient-to-r from-sky-400 to-purple-500 shadow-lg text-white transition-all duration-200 hover:from-purple-400 hover:to-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3
-              sm:py-2 sm:text-base sm:mt-4 md:py-4 md:text-xl md:mt-6
+              `mt-6 w-full max-w-xs font-bold rounded-xl bg-gradient-to-r from-sky-400 to-purple-500 shadow-lg text-white transition-all duration-200 hover:from-purple-400 hover:to-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3 date-time-widget-button
+              sm:mt-4 md:mt-6
               ${tutorialStep === 2 ? 'ring-[6px] ring-yellow-400 ring-offset-4 ring-offset-yellow-200 shadow-[0_0_48px_16px_rgba(255,230,0,0.95)] animate-[pulseGlow_1.2s_ease-in-out_infinite]' : ''}`
             }
             style={tutorialStep === 2 ? {
@@ -319,7 +316,7 @@ const App: React.FC = () => {
             type="button"
           >
             {loading && (
-              <span className="animate-spin inline-block w-6 h-6 border-4 border-white border-t-transparent rounded-full mr-2 sm:w-4 sm:h-4 md:w-6 md:h-6"></span>
+              <span className="animate-spin inline-block border-4 border-white border-t-transparent rounded-full mr-2 date-time-widget-button" style={{ width: '1.5em', height: '1.5em' }}></span>
             )}
             Get Stars
           </button>
