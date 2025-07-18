@@ -257,7 +257,7 @@ const App: React.FC = () => {
         )}
       </div>
       {/* Three-input date and time picker at the top: date, hour, minute */}
-      <div className="flex flex-col items-center" style={{ marginTop: '0.5em', marginBottom: '1rem', zIndex: 50 }}>
+      <div className="absolute left-1/2 -translate-x-1/2 z-50 w-full max-w-xl max-w-[95vw] flex flex-col items-center" style={{ bottom: '12.5vh', position: 'absolute' }}>
         <div className={
           `date-time-widget-container bg-[rgba(30,34,54,0.88)] rounded-2xl shadow-2xl flex flex-col items-center w-full max-w-xl max-w-[95vw] relative
           ${tutorialStep === 0 ? 'ring-[6px] ring-yellow-400 ring-offset-4 ring-offset-yellow-200 shadow-[0_0_48px_16px_rgba(255,230,0,0.95)] animate-[pulseGlow_1.2s_ease-in-out_infinite]' : ''}`
