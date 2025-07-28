@@ -13,6 +13,7 @@ import * as L from 'leaflet';
 interface MapSelectorProps {
   onLocationSelect: (coords: [number, number]) => void;
   selectedLocation: [number, number] | null;
+  disabled?: boolean;
   children?: React.ReactNode;
 }
 
@@ -27,14 +28,20 @@ const LocationMarker: React.FC<{ onSelect: (coords: [number, number]) => void; s
   return selected ? <Marker position={selected} /> : null;
 };
 
-const MapSelector = forwardRef<any, MapSelectorProps>(({ onLocationSelect, selectedLocation, children }, ref) => {
+const MapSelector = forwardRef<any, MapSelectorProps>(({ onLocationSelect, selectedLocation, children, disabled }, ref) => {
+  // Wrap onLocationSelect to prevent selection when disabled
+  const handleSelect = (coords: [number, number]) => {
+    if (!disabled) {
+      onLocationSelect(coords);
+    }
+  };
   return (
     <MapContainer ref={ref} center={selectedLocation || DEFAULT_POSITION} zoom={10} style={{ height: '100vh', width: '100vw' }}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <LocationMarker onSelect={onLocationSelect} selected={selectedLocation} />
+      <LocationMarker onSelect={handleSelect} selected={selectedLocation} />
       {children}
     </MapContainer>
   );

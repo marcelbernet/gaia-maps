@@ -39,10 +39,19 @@ const TutorialModal: React.FC<TutorialModalProps> = ({ step, onNext, onSkip }) =
     <div className="fixed inset-0 z-[100] pointer-events-none">
       {/* Modal box anchored top right on desktop, top/centered on mobile */}
       <div
-        className="absolute top-8 right-8 left-8 md:left-auto bg-[rgba(30,34,54,0.95)] rounded-xl shadow-2xl px-8 py-6 text-white min-w-[260px] max-w-xs md:max-w-sm font-sans text-base md:text-lg flex flex-col items-start gap-4 pointer-events-auto"
+        className="absolute top-[10vh] right-6 left-6 md:left-auto bg-[rgba(30,34,54,0.82)] rounded-2xl shadow-2xl px-6 sm:px-6 py-4 sm:py-6 text-white max-w-xl w-[95vw] md:w-[420px] flex flex-col items-center pointer-events-auto relative"
       >
-        <div className="font-bold text-lg md:text-xl mb-2">{step === 2 ? 'Click Get Stars' : steps[step].text}</div>
-        <div className="flex gap-3 w-full">
+        <button
+            type="button"
+            aria-label="Close"
+            onClick={onSkip}
+            className="absolute top-2 right-2 sm:top-3 sm:right-3 text-white text-2xl sm:text-3xl font-bold focus:outline-none z-10 hover:scale-110 transition-transform"
+            style={{ background: 'none', border: 'none', boxShadow: 'none', width: '2.2rem', height: '2.2rem', lineHeight: '2.2rem', padding: 0 }}
+          >
+            ×
+          </button>
+          <div className="font-serif text-base xs:text-lg sm:text-xl md:text-2xl text-white text-center mb-4 drop-shadow-lg select-none" style={{ textShadow: '0 0 24px #fff, 0 0 48px #6ec1e4' }}>{step === 2 ? 'Click Get Stars' : steps[step].text}</div>
+        <div className="flex gap-3 w-full justify-center">
           <button
             type="button"
             onClick={onNext}

@@ -1,13 +1,17 @@
-  import React from 'react';
-  import ReactDOM from 'react-dom/client';
-  import './tailwind.output.css';
-  import App from './App';
+  import React, { Suspense } from 'react';
+import ReactDOM from 'react-dom/client';
+import './tailwind.output.css';
+import App from './App';
+import './i18n'; // Import i18n configuration
 
-  const root = ReactDOM.createRoot(
-    document.getElementById('root') as HTMLElement
-  );
-  root.render(
-    <React.StrictMode>
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+
+root.render(
+  <React.StrictMode>
+    <Suspense fallback={<div>Loading...</div>}>
       <App />
-    </React.StrictMode>
-  );
+    </Suspense>
+  </React.StrictMode>
+);
