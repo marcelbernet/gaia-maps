@@ -17,5 +17,29 @@
     "p2": "Using data from the European Space Agency's Gaia mission, we can pinpoint the stars directly above you at any given moment, or even the ones that were there when you were born.",
     "p3": "We hope this tool inspires a sense of wonder and a deeper connection to the universe.",
     "close_button": "Close"
+  },
+  "map": {
+    "get_stars": "Get Stars!",
+    "click_location": "Click on your location"
+  },
+  "common": {
+    "got_it": "Got it",
+    "cancel": "Cancel",
+    "apply": "Apply"
+  },
+  "settings": {
+    "title": "Star Settings",
+    "brightness": "Brightness",
+    "naked_eye": "Naked-eye (G<6)",
+    "bright": "Very bright (G<13)",
+    "faint": "Faint (G<19)",
+    "all": "All sources",
+    "include_velocity": "Include Velocity",
+    "include_distance": "Include Distance"
+  },
+  "info": {
+    "title": "How to use",
+    "above_you": "Select a location or allow location access, then press “Get Stars” to see the sky above you.",
+    "special_star": "Pick your birth date & time, choose a location, then press “Get Stars” to find the star above that moment."
   }
 }

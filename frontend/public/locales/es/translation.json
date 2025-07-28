@@ -17,5 +17,29 @@
     "p2": "Utilizando datos de la misión Gaia de la Agencia Espacial Europea, podemos localizar las estrellas que se encuentran directamente sobre ti en cualquier momento, o incluso las que estaban allí cuando naciste.",
     "p3": "Esperamos que esta herramienta inspire una sensación de asombro y una conexión más profunda con el universo.",
     "close_button": "Cerrar"
+  },
+  "common": {
+    "got_it": "Entendido",
+    "cancel": "Cancelar",
+    "apply": "Aplicar"
+  },
+  "settings": {
+    "title": "Ajustes de estrellas",
+    "brightness": "Brillo",
+    "naked_eye": "A simple vista (G<6)",
+    "bright": "Muy brillantes (G<13)",
+    "faint": "Tenues (G<19)",
+    "all": "Todas las fuentes",
+    "include_velocity": "Incluir velocidad",
+    "include_distance": "Incluir distancia"
+  },
+  "map": {
+    "get_stars": "¡Obtener estrellas!",
+    "click_location": "Haz clic en tu ubicación"
+  },
+  "info": {
+    "title": "Cómo usar",
+    "above_you": "Selecciona una ubicación o permite el acceso a la ubicación, luego presiona “¡Obtener estrellas!” para ver el cielo sobre ti.",
+    "special_star": "Elige tu fecha y hora de nacimiento, selecciona una ubicación y presiona “¡Obtener estrellas!” para encontrar la estrella de ese momento."
   }
 }

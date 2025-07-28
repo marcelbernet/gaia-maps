@@ -18,6 +18,59 @@ from fastapi.responses import StreamingResponse
 import io
 from fastapi.responses import JSONResponse
 
+# --- Helper functions for coordinate rotation ---
+import numpy as np  # ensure numpy available for helpers (already imported above but safe)
+
+def rodrigues(axis: np.ndarray, angle: float) -> np.ndarray:
+    """Rodrigues' rotation formula for rotating around *axis* by *angle* (radians)."""
+    axis = axis / np.linalg.norm(axis)
+    K = np.array([[0.0, -axis[2], axis[1]],
+                  [axis[2], 0.0, -axis[0]],
+                  [-axis[1], axis[0], 0.0]])
+    I = np.eye(3)
+    return I * np.cos(angle) + K * np.sin(angle) + np.outer(axis, axis) * (1 - np.cos(angle))
+
+def rotation_from_two_vectors(A: np.ndarray, B: np.ndarray,
+                              A_prime: np.ndarray, B_prime: np.ndarray) -> np.ndarray:
+    """Return rotation matrix sending A→A' and B→B' (all unit vectors)."""
+    A, B, A_prime, B_prime = [v / np.linalg.norm(v) for v in (A, B, A_prime, B_prime)]
+
+    # Step 1: rotate A to A'
+    cos_w = np.clip(np.dot(A, A_prime), -1.0, 1.0)
+    omega = np.arccos(cos_w)
+    if np.isclose(omega, 0):
+        R1 = np.eye(3)
+    elif np.isclose(omega, np.pi):
+        # 180° rotation – choose any perpendicular axis
+        perp = np.array([1.0, 0.0, 0.0])
+        if abs(np.dot(perp, A)) > 0.9:
+            perp = np.array([0.0, 1.0, 0.0])
+        axis = np.cross(A, perp); axis /= np.linalg.norm(axis)
+        R1 = rodrigues(axis, omega)
+    else:
+        axis = np.cross(A, A_prime); axis /= np.linalg.norm(axis)
+        R1 = rodrigues(axis, omega)
+
+    # Step 2: twist around A' to align B with B'
+    B1 = R1 @ B
+    p1 = B1 - np.dot(A_prime, B1) * A_prime
+    p2 = B_prime - np.dot(A_prime, B_prime) * A_prime
+    p1 /= np.linalg.norm(p1); p2 /= np.linalg.norm(p2)
+    sin_phi = np.dot(A_prime, np.cross(p1, p2))
+    cos_phi = np.dot(p1, p2)
+    phi = np.arctan2(sin_phi, cos_phi)
+    R2 = rodrigues(A_prime, phi)
+    return R2 @ R1
+
+def radec_to_vector(ra_deg: float, dec_deg: float) -> np.ndarray:
+    """Convert RA/Dec (degrees) to unit vector in ICRS."""
+    ra_rad = np.deg2rad(ra_deg)
+    dec_rad = np.deg2rad(dec_deg)
+    x = np.cos(dec_rad) * np.cos(ra_rad)
+    y = np.cos(dec_rad) * np.sin(ra_rad)
+    z = np.sin(dec_rad)
+    return np.array([x, y, z])
+
 app = FastAPI(title="GaiaMaps API", description="API for querying Gaia stars above a location at a given time.")
 
 # Allow CORS for frontend
@@ -29,11 +82,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from enum import Enum
+
+class BrightnessMode(str, Enum):
+    naked_eye = "naked-eye"  # G < 6
+    bright = "bright"        # G < 13
+    faint = "faint"          # G < 19
+    all = "all"              # no limit
+
 class StarRequest(BaseModel):
     lat: float = Field(..., ge=-90, le=90, description="Latitude in degrees")
     lon: float = Field(..., ge=-180, le=180, description="Longitude in degrees")
     datetime_iso: str = Field(..., description="Datetime in ISO format (UTC)")
-    limit: Optional[int] = Field(100, ge=1, le=500, description="Maximum number of stars to return (default 100, max 500)")
+    brightness_mode: BrightnessMode = BrightnessMode.all
+    include_velocity: bool = False
+    include_distance: bool = True
+    # fallback limit for custom clients
+    limit: Optional[int] = Field(None, ge=1, le=10000, description="Override maximum number of stars to return")
 
 class PDFRequest(BaseModel):
     star_info: Dict[str, Any]
@@ -84,44 +149,102 @@ def get_stars(req: StarRequest):
         zenith_icrs_aux = SkyCoord(alt=90*u.deg, az=0*u.deg, frame=altaz_frame_aux).transform_to(ICRS())
         center_aux = coords.SkyCoord(ra=zenith_icrs_aux.ra, dec=zenith_icrs_aux.dec, frame='icrs')
 
-        # ADQL query: select 200 closest stars by angular distance
-        radius = 400 * u.arcsec
+        # --- Build query based on settings ---
         center_ra = center.ra.deg
         center_dec = center.dec.deg
-        job = Gaia.launch_job(f"""
-        SELECT TOP 200 *, DISTANCE(
-          POINT('ICRS', ra, dec),
-          POINT('ICRS', {center_ra}, {center_dec})
-        ) AS ang_dist
+
+        # Defaults
+        g_cut = None
+        radius_deg = None
+        limit_clause = ""
+
+        if req.brightness_mode == BrightnessMode.naked_eye:
+            g_cut = 6
+            radius_deg = 20.0  # no radius cap
+            limit_value = req.limit or 10000
+        elif req.brightness_mode == BrightnessMode.bright:
+            g_cut = 13
+            radius_deg = 10.0
+            limit_value = 400
+        elif req.brightness_mode == BrightnessMode.faint:
+            g_cut = 19
+            radius_deg = 2.0
+            limit_value = 400
+        else:  # all
+            g_cut = None
+            radius_deg = 400/3600.0  # 400 arcsec
+            limit_value = 400
+
+        limit_clause = f"TOP {limit_value} " if limit_value else ""
+
+        where_clauses = []
+        if radius_deg is not None:
+            where_clauses.append(f"1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', {center_ra}, {center_dec}, {radius_deg}))")
+        if g_cut is not None:
+            where_clauses.append(f"phot_g_mean_mag < {g_cut}")
+        # Ensure numeric columns for optional selections are present
+        if req.include_distance:
+            where_clauses.append("parallax IS NOT NULL")
+        if req.include_velocity:
+            where_clauses.append("pmra IS NOT NULL AND pmdec IS NOT NULL")
+
+        if not where_clauses:
+            where_sql = "1=1"
+        else:
+            where_sql = " AND ".join(where_clauses)
+
+        query = f"""
+        SELECT {limit_clause}*, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', {center_ra}, {center_dec})) AS ang_dist
         FROM gaiadr3.gaia_source
-        WHERE 1=CONTAINS(
-          POINT('ICRS', ra, dec),
-          CIRCLE('ICRS', {center_ra}, {center_dec}, {radius.to(u.deg).value})
-        )
-        AND parallax IS NOT NULL
-        AND bp_rp IS NOT NULL
+        WHERE {where_sql}
         ORDER BY ang_dist ASC
-        """)
+        """
+        job = Gaia.launch_job(query)
         results = job.get_results()
 
-        alt_diff = results['ra'].value * u.deg - center.ra
-        az_diff = results['dec'].value * u.deg - center.dec
+        # --- Build rotation matrix from ICRS to local ENU (east-north-up) ---
+        A_vec = radec_to_vector(center_ra, center_dec)
+        B_vec = radec_to_vector(center_aux.ra.deg, center_aux.dec.deg)
 
-        # North vector in plane
-        d_az_north = center_aux.ra - center.ra
-        d_alt_north = center_aux.dec - center.dec
-        phi = np.arctan2(d_az_north, d_alt_north)  # angle to rotate coords
+        A_prime = np.array([0.0, 0.0, 1.0])  # local zenith (Up) in ENU
+        # North reference vector at same angular separation from zenith
+        delta_rad = np.arccos(np.clip(np.dot(A_vec, B_vec), -1.0, 1.0))
+        B_prime = np.array([0.0, np.sin(delta_rad), np.cos(delta_rad)])  # aligns with ENU north
 
-        # Rotate diffs so north is up
-        cos_phi, sin_phi = np.cos(phi), np.sin(phi)
-        az_rot = az_diff * cos_phi + alt_diff * sin_phi
-        alt_rot = -az_diff * sin_phi + alt_diff * cos_phi
+        R_icrs_to_enu = rotation_from_two_vectors(A_vec, B_vec, A_prime, B_prime)
 
         stars = []
-        for i, row in enumerate(results):
+        for row in results:
+            # --- Transform star to local ENU ---
+            v_icrs = radec_to_vector(row['ra'], row['dec'])
+            v_enu = R_icrs_to_enu @ v_icrs  # (east, north, up)
+
+            # Angular separation from zenith
+            z_comp = np.clip(v_enu[2], -1.0, 1.0)
+            theta = np.arccos(z_comp)  # radians, small for near-zenith stars
+
+            if theta < 1e-8:
+                d_east_deg = 0.0
+                d_north_deg = 0.0
+            else:
+                horiz_vec = v_enu[:2]  # east, north components
+                horiz_norm = np.linalg.norm(horiz_vec)
+                if horiz_norm < 1e-12:
+                    d_east_deg = 0.0
+                    d_north_deg = 0.0
+                else:
+                    unit_horiz = horiz_vec / horiz_norm
+                    # Scale unit horizontal direction by angular distance (deg)
+                    d_deg = np.degrees(theta)
+                    # Convert east angular offset to degrees of longitude at current latitude
+                    cos_lat = np.cos(np.deg2rad(req.lat)) if abs(req.lat) < 89.999 else 1e-6
+                    d_east_deg = (d_deg * unit_horiz[0]) / cos_lat
+                    d_north_deg = d_deg * unit_horiz[1]
+
             star = {k: (row[k].item() if hasattr(row[k], 'item') else row[k]) for k in row.keys()}
-            star['az_diff'] = float(az_rot[i].to_value(u.deg))
-            star['alt_diff'] = float(alt_rot[i].to_value(u.deg))
+            star['az_diff'] = d_east_deg   # east (+) / west (-)
+            star['alt_diff'] = d_north_deg # north (+) / south (-)
+
             if 'SOURCE_ID' not in star:
                 star['SOURCE_ID'] = None
             if 'source_id' not in star:

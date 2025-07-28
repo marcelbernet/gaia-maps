@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import SettingsModal, { StarSettings } from './components/SettingsModal';
+import { Cog6ToothIcon, HomeIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import InfoModal from './components/InfoModal';
 import HomePage from './components/HomePage';
 import AboutModal from './components/AboutModal';
 import { useGeolocation } from './hooks/useGeolocation';
@@ -22,9 +26,13 @@ const App: React.FC = () => {
   const [view, setView] = useState<'home' | 'map'>('home');
   const [mode, setMode] = useState<Mode>('aboveYou');
 
+  const { t } = useTranslation();
   const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [stars, setStars] = useState<StarData[]>([]);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [settings, setSettings] = useState<StarSettings>({ brightnessMode: 'all', includeVelocity: false, includeDistance: true });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -92,7 +100,7 @@ const App: React.FC = () => {
       const dateToUse = mode === 'aboveYou' ? new Date() : new Date(`${dateInput}T${hourInput}:${minuteInput}`);
       setSelectedDate(dateToUse);
 
-      const data = await fetchStars(selectedLocation, dateToUse);
+      const data = await fetchStars(selectedLocation, dateToUse, settings);
       setStars(data.stars);
 
       let zenith: StarData | null = null;
@@ -143,19 +151,28 @@ const App: React.FC = () => {
           {loading && <Loader />}
 
           {/* UI Elements */}
-          <button
-            className="fixed top-6 left-6 z-[300] bg-[rgba(30,34,54,0.7)] text-blue-100 text-xs px-4 py-2 rounded-full shadow hover:bg-[rgba(30,34,54,0.95)] hover:text-yellow-200 transition-all focus:outline-none"
-            onClick={() => setView('home')}
-          >
-            Home
-          </button>
-
-          <div className="fixed top-6 right-6 z-[300]">
+          {/* Top-right stacked controls */}
+          <div className="fixed top-3 right-3 md:top-6 md:right-6 z-[300] flex flex-col items-end gap-3">
             <button
-              className="bg-[rgba(30,34,54,0.7)] text-blue-100 text-xs px-4 py-2 rounded-full shadow hover:bg-[rgba(30,34,54,0.95)] hover:text-yellow-200 transition-all focus:outline-none"
-              onClick={() => setTutorialStep(0)}
+              className="bg-[rgba(30,34,54,0.7)] p-2 rounded-full shadow text-white hover:bg-[rgba(30,34,54,0.95)] focus:outline-none"
+              onClick={() => setView('home')}
+              aria-label="Home"
             >
-              {mode === 'aboveYou' ? 'How to find your sky' : 'How to find your special star'}
+              <HomeIcon className="h-5 w-5" />
+            </button>
+            <button
+              className="bg-[rgba(30,34,54,0.7)] p-2 rounded-full shadow text-white hover:bg-[rgba(30,34,54,0.95)] focus:outline-none"
+              onClick={() => setInfoOpen(true)}
+              aria-label="Help"
+            >
+              <QuestionMarkCircleIcon className="h-5 w-5" />
+            </button>
+            <button
+              className="bg-[rgba(30,34,54,0.7)] p-2 rounded-full shadow text-white hover:bg-[rgba(30,34,54,0.95)] focus:outline-none"
+              onClick={() => setSettingsOpen(true)}
+              aria-label="Settings"
+            >
+              <Cog6ToothIcon className="h-5 w-5" />
             </button>
           </div>
 
@@ -189,9 +206,10 @@ const App: React.FC = () => {
               </div>
             )}
             {mode === 'aboveYou' && !location && permissionDenied && (
-              <div className="mb-2 text-lg font-semibold text-gray-800 bg-white/80 px-6 py-3 rounded-xl shadow">Click on your location</div>
-            )}
-            <button
+               <div className="mb-2 text-lg font-semibold text-gray-800 bg-white/80 px-6 py-3 rounded-xl shadow">{t('map.click_location')}</div>
+             )}
+            
+          <button
               className="action-btn w-full max-w-xs font-bold rounded-xl border-none shadow-lg text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300 disabled:opacity-60 leading-none whitespace-nowrap truncate overflow-hidden block"
               style={{ background: 'linear-gradient(90deg, #fde047 0%, #ec4899 100%)', lineHeight: '1', padding: '1rem', boxSizing: 'border-box' }}
               onMouseOver={e => (e.currentTarget.style.background = 'linear-gradient(90deg, #ec4899 0%, #fde047 100%)')}
@@ -199,7 +217,7 @@ const App: React.FC = () => {
               onClick={handleGetStars}
               disabled={loading || !selectedLocation}
             >
-              Get Stars!
+              {t('map.get_stars')}
             </button>
           </div>
 
@@ -216,6 +234,20 @@ const App: React.FC = () => {
             onSkip={() => setTutorialStep(null)}
         />
       )}
+      {/* Info modal */}
+      <InfoModal
+        open={infoOpen}
+        onClose={() => setInfoOpen(false)}
+        title={t('info.title')}
+        message={mode === 'aboveYou' ? t('info.above_you') : t('info.special_star')}
+      />
+      {/* Settings modal */}
+      <SettingsModal
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        settings={settings}
+        onApply={setSettings}
+      />
     </>
   );
 };
