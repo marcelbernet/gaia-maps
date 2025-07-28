@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import React, { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 
@@ -60,10 +61,10 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, onAbout }) => {
               {t('home.button_language')}
             </button>
             {showLanguages && (
-              <div className="absolute bottom-full mb-2 flex flex-col items-center gap-1 p-2 bg-[rgba(30,34,54,0.95)] rounded-lg">
-                <button onClick={() => changeLanguage('en')} aria-label="English" className="w-6 h-4"><img src="/flags/en.png" alt="English flag" className="w-full h-full object-cover rounded-sm" /></button>
-                <button onClick={() => changeLanguage('ca')} aria-label="Catalan" className="w-6 h-4"><img src="/flags/ca.png" alt="Catalan flag" className="w-full h-full object-cover rounded-sm" /></button>
-                <button onClick={() => changeLanguage('es')} aria-label="Spanish" className="w-6 h-4"><img src="/flags/es.png" alt="Spanish flag" className="w-full h-full object-cover rounded-sm" /></button>
+              <div className="absolute bottom-full mb-2 flex flex-col items-center gap-1 p-2 bg-[rgba(30,34,54,0.95)] rounded-lg z-30">
+                <button onClick={() => changeLanguage('en')} aria-label="English" className="px-2 py-1 text-xs text-white bg-gray-700 hover:bg-gray-600 rounded">English</button>
+                <button onClick={() => changeLanguage('ca')} aria-label="Catalan" className="px-2 py-1 text-xs text-white bg-gray-700 hover:bg-gray-600 rounded">Català</button>
+                <button onClick={() => changeLanguage('es')} aria-label="Spanish" className="px-2 py-1 text-xs text-white bg-gray-700 hover:bg-gray-600 rounded">Español</button>
               </div>
             )}
           </div>
